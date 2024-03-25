@@ -17,7 +17,7 @@ func initWorkPoll() {
 	}
 }
 
-func setTcpConifg(c *net.TCPConn) {
+func setTcpConfig(c *net.TCPConn) {
 	_ = c.SetKeepAlive(true)
 }
 

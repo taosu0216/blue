@@ -49,7 +49,8 @@ func newEPoll(ln *net.TCPListener, f func(c *connection, ep *epoller)) *ePoll {
 		f:      f,
 		done:   make(chan struct{}),
 		tables: sync.Map{},
-		eSize:  config.GetGatewayEpollerNum(),
+		//4个epoll对象
+		eSize: config.GetGatewayEpollerNum(),
 	}
 }
 
@@ -73,7 +74,7 @@ func (e *ePoll) createAcceptProcess() {
 			for {
 				conn, err := e.ln.AcceptTCP()
 				//手动设置tcp为长连接模式
-				setTcpConifg(conn)
+				setTcpConfig(conn)
 				//获取到连接并且进行熔断限流
 				if !checkTcp() {
 					_ = conn.Close()
@@ -187,14 +188,15 @@ func (e *epoller) remove(c *connection) error {
 }
 
 func (e *epoller) wait(msec int) ([]*connection, error) {
+	// 最多100
 	events := make([]unix.EpollEvent, config.GetGatewayEpollWaitQueueSize())
-	//监听系统级epoll对象的fd,等待事件发生
+	// 监听系统级epoll对象的fd,等待事件发生
 	n, err := unix.EpollWait(e.fd, events, msec)
 	if err != nil {
 		return nil, err
 	}
 	connections := make([]*connection, 0, n)
-	//var connections []*connection
+	// var connections []*connection
 	for i := 0; i < n; i++ {
 		if conn, ok := e.fdToConnTable.Load(int(events[i].Fd)); ok {
 			connections = append(connections, conn.(*connection))

@@ -24,6 +24,7 @@ func RunMain(configPath string) {
 	initEPoll(ln, runProc)
 	select {}
 }
+
 func runProc(c *connection, ep *epoller) {
 	ctx := context.Background()
 	// 读取数据
@@ -37,7 +38,7 @@ func runProc(c *connection, ep *epoller) {
 	}
 	err = wPool.Submit(func() {
 		// step2:交给 state server rpc 处理
-		client.SendMsg(&ctx, getEndpoint(), c.id, dataBuf)
+		_ = client.SendMsg(&ctx, getEndpoint(), c.id, dataBuf)
 	})
 	if err != nil {
 		fmt.Errorf("runProc:err:%+v\n", err.Error())
