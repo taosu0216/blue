@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	ep     = &ePoll{}
+	ep     *ePoll
 	tcpNum int32
 )
 
@@ -37,7 +37,7 @@ type epoller struct {
 
 func initEPoll(ln *net.TCPListener, f func(c *connection, ep *epoller)) {
 	setLimit()
-	ep := newEPoll(ln, f)
+	ep = newEPoll(ln, f)
 	ep.createAcceptProcess()
 	ep.startEPoll()
 }
@@ -103,6 +103,7 @@ func (e *ePoll) startEPoll() {
 }
 
 func (e *ePoll) addTask(c *connection) {
+	fmt.Println("new tcp connection created,fd: ", c.fd, " tcp num: ", tcpNum)
 	e.eChan <- c
 }
 

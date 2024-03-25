@@ -12,6 +12,7 @@ var wPool *ants.Pool
 
 func initWorkPoll() {
 	var err error
+	// 1024个协程
 	if wPool, err = ants.NewPool(config.GetGatewayWorkerPoolNum()); err != nil {
 		fmt.Printf("InitWorkPoll.err :%s num:%d\n", err.Error(), config.GetGatewayWorkerPoolNum())
 	}

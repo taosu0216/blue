@@ -3,10 +3,8 @@ package gateway
 import (
 	"blue/common/config"
 	"blue/common/tcp"
-	"context"
 	"errors"
 	"fmt"
-	"github.com/hardcore-os/plato/gateway/rpc/client"
 	"io"
 	"net"
 )
@@ -22,25 +20,29 @@ func RunMain(configPath string) {
 		panic(err)
 	}
 	initEPoll(ln, runProc)
+	fmt.Println("-------------im gateway stated------------")
 	select {}
 }
 
 func runProc(c *connection, ep *epoller) {
-	ctx := context.Background()
+	//ctx := context.Background()
 	// 读取数据
 	dataBuf, err := tcp.ReadData(c.conn)
 	if err != nil {
 		if errors.Is(err, io.EOF) {
 			_ = ep.remove(c)
-			_ = client.CancelConn(&ctx, getEndpoint(), c.id, nil)
+			//_ = client.CancelConn(&ctx, getEndpoint(), c.id, nil)
 		}
 		return
 	}
 	err = wPool.Submit(func() {
-		// step2:交给 state server rpc 处理
-		_ = client.SendMsg(&ctx, getEndpoint(), c.id, dataBuf)
+		bytes := &tcp.DataPack{
+			Len:  uint32(len(dataBuf)),
+			Data: dataBuf,
+		}
+		_ = tcp.SendData(c.conn, bytes.Marshal())
 	})
 	if err != nil {
-		fmt.Errorf("runProc:err:%+v\n", err.Error())
+		_ = fmt.Errorf("runProc:err:%+v\n", err.Error())
 	}
 }

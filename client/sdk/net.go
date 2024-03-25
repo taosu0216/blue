@@ -1,25 +1,64 @@
 package sdk
 
-type conncet struct {
-	serverAddr         string
-	SendChan, RecvChan chan *Message
+import (
+	"blue/common/tcp"
+	"encoding/json"
+	"fmt"
+	"net"
+)
+
+type connect struct {
+	sendChan, recvChan chan *Message
+	conn               *net.TCPConn
+	connID             uint64
+	ip                 net.IP
+	port               int
 }
 
-func newConnect(addr string) *conncet {
-	return &conncet{
-		serverAddr: addr,
-		//TODO: 为什么这里要有缓冲??????
-		SendChan: make(chan *Message, 10),
-		RecvChan: make(chan *Message, 10),
+func newConnect(ip net.IP, port int) *connect {
+
+	clientConn := &connect{
+		sendChan: make(chan *Message, 5),
+		recvChan: make(chan *Message, 5),
+		ip:       ip,
+		port:     port,
 	}
+
+	addr := &net.TCPAddr{IP: ip, Port: port}
+	conn, err := net.DialTCP("tcp", nil, addr)
+	if err != nil {
+		fmt.Printf("DialTCP.err=%+v", err)
+		return nil
+	}
+	clientConn.conn = conn
+	go func() {
+		for {
+			data, _ := tcp.ReadData(conn)
+			//if err != nil {
+			//	fmt.Printf("ReadData.err=%+v\n", err)
+			//}
+			msg := &Message{}
+			_ = json.Unmarshal(data, msg)
+			clientConn.recvChan <- msg
+		}
+	}()
+	return clientConn
 }
 
-func (c *conncet) send(data *Message) {
-	c.SendChan <- data
+func (c *connect) send(data *Message) {
+
+	bytes, _ := json.Marshal(data)
+	dataPack := &tcp.DataPack{Data: bytes, Len: uint32(len(bytes))}
+	msg := dataPack.Marshal()
+	_, _ = c.conn.Write(msg)
+	c.sendChan <- data
 }
 
-func (c *conncet) recv() <-chan *Message {
-	return c.RecvChan
+func (c *connect) recv() <-chan *Message {
+	if c.recvChan == nil {
+		fmt.Println("recvChan is nil")
+	}
+	return c.recvChan
 }
 
-func (c *conncet) close() {}
+func (c *connect) close() {}
