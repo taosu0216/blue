@@ -27,7 +27,7 @@ func newConnect(ip net.IP, port int) *connect {
 	addr := &net.TCPAddr{IP: ip, Port: port}
 	conn, err := net.DialTCP("tcp", nil, addr)
 	if err != nil {
-		fmt.Printf("DialTCP.err=%+v", err)
+		fmt.Printf("DialTCP.err=%+v\n", err)
 		return nil
 	}
 	clientConn.conn = conn

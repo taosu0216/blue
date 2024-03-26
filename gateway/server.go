@@ -35,14 +35,11 @@ func runProc(c *connection, ep *epoller) {
 		}
 		return
 	}
-	err = wPool.Submit(func() {
+	_ = wPool.Submit(func() {
 		bytes := &tcp.DataPack{
 			Len:  uint32(len(dataBuf)),
 			Data: dataBuf,
 		}
 		_ = tcp.SendData(c.conn, bytes.Marshal())
 	})
-	if err != nil {
-		_ = fmt.Errorf("runProc:err:%+v\n", err.Error())
-	}
 }
