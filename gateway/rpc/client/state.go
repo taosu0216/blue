@@ -20,6 +20,8 @@ func initStateClient() {
 
 func SendMsg(ctx *context.Context, endpoint string, fd int32, playLoad []byte) error {
 	rpcCtx, _ := context.WithTimeout(*ctx, 100*time.Millisecond)
+	// 同机器部署gateway和state，使用domain socket
+	// TODO: domain.SendMsg(endpoint,fd,playLoad)
 	_, err := stateClient.SendMsg(rpcCtx, &service.StateRequest{
 		Endpoint: endpoint,
 		Fd:       fd,

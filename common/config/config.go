@@ -90,3 +90,7 @@ func GetStateServerPort() int {
 func GetStateRPCWeight() int {
 	return viper.GetInt("state.weight")
 }
+
+func GetDomainSocketPushPath() string { return viper.GetString("domain.pushpath") }
+
+func GetDomainSocketPullPath() string { return viper.GetString("domain.pullpath") }

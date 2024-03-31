@@ -173,7 +173,7 @@ func (e *epoller) add(c *connection) error {
 	e.fdToConnTable.Store(c.fd, c)
 	// TODO: id问题
 	ep.tables.Store(c.id, c)
-	ep.tables.Store(fd, c)
+	// ep.tables.Store(fd, c)
 	c.e = e
 	return nil
 }

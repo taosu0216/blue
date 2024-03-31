@@ -37,3 +37,6 @@ brpc:
     url: http://127.0.0.1:14268/api/traces
     service_name: blue
     sampler: 1.0
+domain:
+  pushpath: "/tmp/echo_push.sock"
+  pullpath: "/tmp/echo_pull.sock"

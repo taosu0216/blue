@@ -14,7 +14,9 @@ import (
 	"net"
 )
 
-var cmdChannel chan *service.CmdContext
+var (
+	CmdChan chan *service.CmdContext
+)
 
 func RunMain(configPath string) {
 	// Run the gateway
@@ -28,7 +30,7 @@ func RunMain(configPath string) {
 	}
 	initEPoll(ln, runProc)
 
-	cmdChannel = make(chan *service.CmdContext, config.GetGatewayCmdChannelNum())
+	CmdChan = make(chan *service.CmdContext, config.GetGatewayCmdChannelNum())
 
 	s := brpc.NewBServer(
 		brpc.WithServiceName(config.GetGateWayServiceName()),
@@ -38,12 +40,20 @@ func RunMain(configPath string) {
 	)
 
 	s.RegisterService(func(server *grpc.Server) {
-		service.RegisterGatewayServer(server, &service.Service{CmdChannel: cmdChannel})
+		service.RegisterGatewayServer(server, &service.Service{CmdChannel: CmdChan})
 	})
 
 	fmt.Println("-------------im gateway stated------------")
 	// 启动rpc 客户端
 	client.Init()
+
+	// TODO: 同机器部署gateway和state，使用domain socket通信
+	//go func(){
+	//	for  {
+	//		domain.ListenUnixConn()
+	//	}
+	//}()
+
 	// 启动 命令处理写协程
 	go cmdHandler()
 	// 启动 rpc server
@@ -67,7 +77,7 @@ func runProc(c *connection, ep *epoller) {
 }
 
 func cmdHandler() {
-	for cmd := range cmdChannel {
+	for cmd := range CmdChan {
 		// 异步提交到协池中完成发送任务
 		switch cmd.Cmd {
 		case service.DelConnCmd:
