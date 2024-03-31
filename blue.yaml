@@ -19,3 +19,21 @@ gateway:
   cmd_channel_num: 2048
   weight: 100
   state_server_endpoint: "127.0.0.1:8902"
+state:
+  service_name: "blue.access.state"
+  service_addr: "127.0.0.1"
+  cmd_channel_num: 2048
+  server_port: 8902
+  weight: 100
+  conn_state_slot_range: "0,1024"
+  gateway_server_endpoint: "127.0.0.1:8901"
+brpc:
+  discov:
+    name: etcd
+    endpoints:
+      - localhost:2379
+  trace:
+    enable: true
+    url: http://127.0.0.1:14268/api/traces
+    service_name: blue
+    sampler: 1.0

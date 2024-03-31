@@ -18,12 +18,11 @@ type connect struct {
 func newConnect(ip net.IP, port int) *connect {
 
 	clientConn := &connect{
-		sendChan: make(chan *Message, 5),
-		recvChan: make(chan *Message, 5),
+		sendChan: make(chan *Message),
+		recvChan: make(chan *Message),
 		ip:       ip,
 		port:     port,
 	}
-
 	addr := &net.TCPAddr{IP: ip, Port: port}
 	conn, err := net.DialTCP("tcp", nil, addr)
 	if err != nil {
@@ -51,7 +50,7 @@ func (c *connect) send(data *Message) {
 	dataPack := &tcp.DataPack{Data: bytes, Len: uint32(len(bytes))}
 	msg := dataPack.Marshal()
 	_, _ = c.conn.Write(msg)
-	c.sendChan <- data
+	//c.sendChan <- data
 }
 
 func (c *connect) recv() <-chan *Message {

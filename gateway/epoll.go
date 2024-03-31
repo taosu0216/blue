@@ -171,7 +171,9 @@ func (e *epoller) add(c *connection) error {
 		return err
 	}
 	e.fdToConnTable.Store(c.fd, c)
+	// TODO: id问题
 	ep.tables.Store(c.id, c)
+	ep.tables.Store(fd, c)
 	c.e = e
 	return nil
 }

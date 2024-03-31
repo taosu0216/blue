@@ -14,6 +14,8 @@ require (
 	go.etcd.io/etcd/api/v3 v3.5.4
 	go.etcd.io/etcd/client/v3 v3.5.4
 	golang.org/x/sys v0.10.0
+	google.golang.org/grpc v1.48.0
+	google.golang.org/protobuf v1.28.1
 )
 
 require (
@@ -58,8 +60,6 @@ require (
 	golang.org/x/net v0.2.0 // indirect
 	golang.org/x/text v0.4.0 // indirect
 	google.golang.org/genproto v0.0.0-20220915135415-7fd63a7952de // indirect
-	google.golang.org/grpc v1.48.0 // indirect
-	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

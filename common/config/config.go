@@ -56,6 +56,37 @@ func GetGatewayServiceAddr() string {
 	return viper.GetString("gateway.service_addr")
 }
 
+func GetGateWayServiceName() string {
+	return viper.GetString("gateway.service_name")
+}
+
+func GetGatewayWeight() int {
+	return viper.GetInt("gateway.weight")
+}
+
 func GetGatewayRPCServerPort() int {
 	return viper.GetInt("gateway.rpc_server_port")
+}
+
+func GetGatewayCmdChannelNum() int {
+	return viper.GetInt("gateway.cmd_channel_num")
+}
+
+func GetStateCmdChannelNum() int {
+	return viper.GetInt("state.cmd_channel_num")
+}
+
+func GetStateServiceName() string {
+	return viper.GetString("state.service_name")
+}
+
+func GetStateServiceAddr() string {
+	return viper.GetString("state.service_addr")
+}
+
+func GetStateServerPort() int {
+	return viper.GetInt("state.server_port")
+}
+func GetStateRPCWeight() int {
+	return viper.GetInt("state.weight")
 }

@@ -15,16 +15,16 @@ import (
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
-	//verbose = true
-	//step = 1
+	verbose = true
+	step = 1
 }
 
 var (
-	buf  string
-	chat *sdk.Chat
-	//step    int
-	pos int
-	//verbose bool
+	buf     string
+	chat    *sdk.Chat
+	step    int
+	pos     int
+	verbose bool
 )
 
 type VOT struct {
@@ -221,16 +221,6 @@ func pasteDown(g *gocui.Gui, cv *gocui.View) error {
 
 func doRecv(g *gocui.Gui) {
 	recvChannel := chat.Recv()
-	//for msg := range recvChannel {
-	//	if msg != nil {
-	//		switch msg.Type {
-	//		case sdk.MsgTypeText:
-	//			viewPrint(g, msg.Name, msg.Content, false)
-	//		case sdk.MsgTypeAck:
-	//			//TODO 默认不处理
-	//		}
-	//	}
-	//}
 	for msg := range recvChannel {
 		switch msg.Type {
 		case sdk.MsgTypeText:
@@ -275,8 +265,8 @@ func doSay(g *gocui.Gui, cv *gocui.View) {
 				ToUserID:   "222222",
 				Content:    string(p)}
 			// 先把自己说的话显示到消息流中 fmt.Sprintf("%d", chat.GetCurClientID())
-			idKey := `1`
-			viewPrint(g, "me:"+idKey, msg.Content, true)
+			//idKey := `1`
+			viewPrint(g, "me", msg.Content, false)
 			chat.Send(msg)
 		}
 		v.Autoscroll = true

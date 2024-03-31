@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option go_package = "./;service";
+
+package service;
+// protoc -I service --go-grpc_out=./service --go_out=./service service/gateway.proto
+service Gateway {
+  rpc DelConn (GatewayRequest) returns (GatewayResponse);
+  rpc Push (GatewayRequest) returns (GatewayResponse);
+}
+
+message GatewayRequest{
+  int32 fd = 1;
+  bytes data = 2;
+}
+
+message GatewayResponse {
+  int32 code = 1;
+  string msg = 2;
+}
